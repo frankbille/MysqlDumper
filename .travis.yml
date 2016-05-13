@@ -2,3 +2,7 @@ language: java
 
 services:
   - mysql
+
+os:
+  - osx
+  - linux
