@@ -1,7 +1,14 @@
 language: java
-
 services:
-  - mysql
-
+- mysql
 jdk:
-  - oraclejdk8
+- oraclejdk8
+script:
+- mvn package
+deploy:
+  provider: releases
+  api_key:
+    secure: Qh0Oo2jk4VfshJm8gAMlXI9fEOcpUysXlmE69qP4fdfvXMhwDzyKXrIPdKlRN9qDffm5LC0UBmY9QntuFhRyleR1WIojavwL6N7qdRjT1OcN98kJtdv7GHs5TSblpSziVwRRJJgos3JzaQMyk58RWsRj6hGeHho5DlfyvzMaVjmF9gVcTYs7WXCXHgvHy4SAWXm9HJQTpjoUPOYtE8fJx7V/mE7iK4Rc2uoIqpsx9gye6lShmQjByYcKHJrjzxRFWUpvGR218UWD+gUNFUPOy0A89rxYHttGt+/6OjKbsIU3vHSuzc+gGia9MA6slLWYc16ILr97olGQusE8/gDKkIIZadkpwBU1IH5AXipF8FzvWOsbKhyfkE6TwdwMz0bPkZnHPVRhLxRUxhgao1EZDxf18kWSEnPGxQOc9/bFau1mR4AxN60ez63db2pj5DhB2WBd9lGbtiFcZcUh3W4J9mFRtNuETafdsdZ6FvpsOcDVNyalrxwhhJyub85jCZE1J50UUp3pm/uCZfBN1vBFolbRGmMNHeehNuihiefIL0mqxBArbY/tjpX+hjbkbMRNhCd1Dwf4ZjQVSQEw7Jarkk29Msa/Xc1X/cltc1HHv744zt6YXlUImiC9I95rXe48wOnC2ldrxqZFDsjj/eMBBCJ7HRxBf9UYu0N+0VDhMGM=
+  file: target/mysqldumper-1.0-SNAPSHOT.jar
+  on:
+    repo: frankbille/MysqlDumper
