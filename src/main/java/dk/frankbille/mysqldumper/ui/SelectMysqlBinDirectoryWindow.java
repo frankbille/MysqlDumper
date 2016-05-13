@@ -3,15 +3,13 @@ package dk.frankbille.mysqldumper.ui;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 import dk.frankbille.mysqldumper.Configuration;
-import dk.frankbille.mysqldumper.MysqlClient;
+import dk.frankbille.mysqldumper.sql.MysqlBinaryClient;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class SelectMysqlBinDirectoryWindow extends JDialog {
-    private final Configuration configuration;
+    private final MysqlBinaryClient mysqlClient;
     private JPanel contentPane;
     private JButton okButton;
     private JTextField mysqlBinDirField;
@@ -19,7 +17,7 @@ public class SelectMysqlBinDirectoryWindow extends JDialog {
     private JLabel testLabel;
 
     public SelectMysqlBinDirectoryWindow(Configuration configuration) {
-        this.configuration = configuration;
+        mysqlClient = new MysqlBinaryClient(configuration);
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(okButton);
@@ -51,7 +49,7 @@ public class SelectMysqlBinDirectoryWindow extends JDialog {
     }
 
     private void testMysqlBinDirectory() {
-        if (configuration.isValidMysqlBinDirectory()) {
+        if (mysqlClient.isValidMysqlBinDirectory()) {
             testLabel.setText("Valid path");
             testLabel.setForeground(Color.GREEN);
             okButton.setEnabled(true);

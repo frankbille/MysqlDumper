@@ -1,5 +1,7 @@
 package dk.frankbille.mysqldumper;
 
+import dk.frankbille.mysqldumper.sql.MysqlClient;
+import dk.frankbille.mysqldumper.sql.MysqlJdbcClient;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.jdbc.core.JdbcOperations;
@@ -15,37 +17,34 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class DumperTest {
 
-    private Configuration configuration;
     private ConnectionConfiguration connectionConfiguration;
-    private JdbcOperations jdbcOperations;
-    private Dumper dumper;
+    private MysqlJdbcClient mysqlClient;
 
     @Before
     public void setupTestDatabase() throws IOException {
-        configuration = new Configuration("/test");
+        Configuration configuration = new Configuration("/test");
+        mysqlClient = new MysqlJdbcClient();
 
         connectionConfiguration = configuration.addNewConnection();
         connectionConfiguration.setHost("localhost");
         connectionConfiguration.setDatabase("mysqldumpertest");
         connectionConfiguration.setUsername("root");
 
-        DataSource dataSource = connectionConfiguration.createDataSource(false);
-        jdbcOperations = new JdbcTemplate(dataSource);
+        DataSource dataSource = mysqlClient.createDataSource(connectionConfiguration, false);
+        JdbcOperations jdbcOperations = new JdbcTemplate(dataSource);
 
         jdbcOperations.execute("DROP DATABASE IF EXISTS mysqldumpertest");
         jdbcOperations.execute("CREATE DATABASE mysqldumpertest");
 
-        dataSource = connectionConfiguration.createDataSource();
+        dataSource = mysqlClient.createDataSource(connectionConfiguration);
         jdbcOperations = new JdbcTemplate(dataSource);
 
         jdbcOperations.execute(new String(Files.readAllBytes(Paths.get("src/test/resources/testdb.sql"))));
-
-        dumper = new Dumper();
     }
 
     @Test
     public void prepareDumpShouldCorrectSettingsForDatabase() {
-        final DumpConfiguration dumpConfiguration = dumper.prepareDump(connectionConfiguration);
+        final DumpConfiguration dumpConfiguration = Dumper.prepareDump(mysqlClient, connectionConfiguration);
 
         assertThat(dumpConfiguration).isNotNull();
 

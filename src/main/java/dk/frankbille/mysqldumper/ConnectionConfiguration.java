@@ -1,17 +1,10 @@
 package dk.frankbille.mysqldumper;
 
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
-
-import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
 
 public class ConnectionConfiguration {
-
-    public interface ConnectionChangedListener {
-        void connectionChanged(ConnectionConfiguration connectionConfiguration);
-    }
 
     private final Preferences connectionConfiguration;
     private final List<ConnectionChangedListener> listeners = new ArrayList<>();
@@ -110,26 +103,12 @@ public class ConnectionConfiguration {
         }
     }
 
-    public DataSource createDataSource() {
-        return createDataSource(true);
-    }
-
-    public DataSource createDataSource(boolean withDatabase) {
-        String jdbcUrl = "jdbc:mysql://";
-        jdbcUrl += getHost();
-        if (getPort() != 3306 && getPort() != -1) {
-            jdbcUrl += ":" + getPort();
-        }
-        if (withDatabase) {
-            jdbcUrl += "/" + getDatabase();
-        }
-        jdbcUrl += "?allowMultiQueries=true";
-
-        return new DriverManagerDataSource(jdbcUrl, getUsername(), getPassword());
-    }
-
     @Override
     public String toString() {
         return getName();
+    }
+
+    public interface ConnectionChangedListener {
+        void connectionChanged(ConnectionConfiguration connectionConfiguration);
     }
 }

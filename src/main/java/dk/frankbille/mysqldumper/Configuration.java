@@ -49,10 +49,6 @@ public class Configuration {
         rootNode.put("mysqlBinDirectory", mysqlBinDirectory);
     }
 
-    public boolean isValidMysqlBinDirectory() {
-        return MysqlClient.isValidMysqlBinDirectory(getMysqlBinDirectory());
-    }
-
     public List<ConnectionConfiguration> getConnections() {
         return connections;
     }

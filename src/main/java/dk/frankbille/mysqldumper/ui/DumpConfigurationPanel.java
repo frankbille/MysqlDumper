@@ -5,6 +5,7 @@ import com.jgoodies.forms.layout.FormLayout;
 import dk.frankbille.mysqldumper.ConnectionConfiguration;
 import dk.frankbille.mysqldumper.DumpConfiguration;
 import dk.frankbille.mysqldumper.Dumper;
+import dk.frankbille.mysqldumper.sql.MysqlClient;
 
 import javax.swing.*;
 import javax.swing.table.JTableHeader;
@@ -22,11 +23,12 @@ public class DumpConfigurationPanel {
     private JButton connectButton;
     private JButton dumpButton;
     private JButton refreshButton;
+    private MysqlClient mysqlClient;
     private ConnectionConfiguration connectionConfiguration;
 
     public DumpConfigurationPanel() {
-        connectButton.addActionListener(e -> setDumpConfiguration(Dumper.prepareDump(connectionConfiguration)));
-        refreshButton.addActionListener(e -> setDumpConfiguration(Dumper.prepareDump(connectionConfiguration)));
+        connectButton.addActionListener(e -> setDumpConfiguration(Dumper.prepareDump(mysqlClient, connectionConfiguration)));
+        refreshButton.addActionListener(e -> setDumpConfiguration(Dumper.prepareDump(mysqlClient, connectionConfiguration)));
 
         connectButton.setEnabled(false);
         refreshButton.setEnabled(false);
@@ -53,7 +55,8 @@ public class DumpConfigurationPanel {
         });
     }
 
-    public void setConnectionConfiguration(ConnectionConfiguration connectionConfiguration) {
+    public void setConnectionConfiguration(MysqlClient mysqlClient, ConnectionConfiguration connectionConfiguration) {
+        this.mysqlClient = mysqlClient;
         this.connectionConfiguration = connectionConfiguration;
 
         connectButton.setEnabled(true);

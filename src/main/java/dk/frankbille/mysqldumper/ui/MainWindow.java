@@ -4,6 +4,8 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 import dk.frankbille.mysqldumper.Configuration;
 import dk.frankbille.mysqldumper.ConnectionConfiguration;
+import dk.frankbille.mysqldumper.sql.MysqlBinaryClient;
+import dk.frankbille.mysqldumper.sql.MysqlClient;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -25,10 +27,12 @@ public class MainWindow extends JDialog {
         getRootPane().setDefaultButton(buttonOK);
 
         Configuration configuration = new Configuration();
+        MysqlClient mysqlClient = new MysqlBinaryClient(configuration);
+
         connectionList.setModel(new ConnectionListModel(configuration));
         connectionList.addListSelectionListener(e -> {
             final ConnectionConfiguration selectedConnectionConfiguration = connectionList.getModel().getElementAt(e.getFirstIndex());
-            dumpConfigurationPanel.setConnectionConfiguration(selectedConnectionConfiguration);
+            dumpConfigurationPanel.setConnectionConfiguration(mysqlClient, selectedConnectionConfiguration);
         });
         connectionList.addMouseListener(new MouseAdapter() {
             @Override
@@ -46,7 +50,7 @@ public class MainWindow extends JDialog {
             openConnectionConfigurationWindow(connectionConfiguration);
         });
 
-        if (!configuration.isValidMysqlBinDirectory()) {
+        if (!mysqlClient.isValidMysqlBinDirectory()) {
             SelectMysqlBinDirectoryWindow selectMysqlBinDirectoryWindow = new SelectMysqlBinDirectoryWindow(configuration);
             selectMysqlBinDirectoryWindow.setSize(600, 300);
             selectMysqlBinDirectoryWindow.setLocationRelativeTo(null);
