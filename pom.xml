@@ -4,13 +4,13 @@
 
     <groupId>dk.frankbille</groupId>
     <artifactId>mysqldumper</artifactId>
-    <version>0.2-SNAPSHOT</version>
+    <version>0.2</version>
     <name>MysqlDumper</name>
     <description>Dumping a Mysql database with possibility to exclude data from specific tables with their dependencies.</description>
 
     <scm>
         <developerConnection>scm:git:https://github.com/frankbille/MysqlDumper.git</developerConnection>
-      <tag>HEAD</tag>
+      <tag>mysqldumper-0.2</tag>
   </scm>
 
     <build>
