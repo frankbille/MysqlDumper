@@ -1,14 +1,16 @@
 package dk.frankbille.mysqldumper;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.prefs.Preferences;
 
 public class Table implements Comparable<Table> {
 
     private final String name;
     private final long ownSize;
     private final Set<Table> dependentTables = new TreeSet<>();
-    private boolean definitionIncluded = true;
+    private boolean structureIncluded = true;
     private boolean dataIncluded = true;
 
     public Table(String name, long ownSize) {
@@ -25,9 +27,17 @@ public class Table implements Comparable<Table> {
     }
 
     public long getTreeSize() {
-        long treeSize = ownSize;
+        return getTreeSize(new HashSet<>());
+    }
+
+    private long getTreeSize(Set<Table> visitedTables) {
+        visitedTables.add(this);
+
+        long treeSize = getOwnSize();
         for (Table dependentTable : dependentTables) {
-            treeSize += dependentTable.getTreeSize();
+            if (!visitedTables.contains(dependentTable)) {
+                treeSize += dependentTable.getTreeSize(visitedTables);
+            }
         }
         return treeSize;
     }
@@ -40,15 +50,27 @@ public class Table implements Comparable<Table> {
         dependentTables.add(dependentTable);
     }
 
-    public boolean isDefinitionIncluded() {
-        return definitionIncluded;
+    public boolean isStructureIncluded() {
+        return structureIncluded;
     }
 
-    public void setDefinitionIncluded(boolean definitionIncluded) {
-        this.definitionIncluded = definitionIncluded;
+    public void setStructureIncluded(boolean structureIncluded) {
+        setStructureIncluded(structureIncluded, new HashSet<>());
+    }
+
+    private void setStructureIncluded(boolean structureIncluded, Set<Table> visitedTables) {
+        this.structureIncluded = structureIncluded;
+
+        visitedTables.add(this);
 
         for (Table dependentTable : dependentTables) {
-            dependentTable.setDefinitionIncluded(definitionIncluded);
+            if (!visitedTables.contains(dependentTable)) {
+                dependentTable.setStructureIncluded(structureIncluded, visitedTables);
+            }
+        }
+
+        if (!structureIncluded) {
+            setDataIncluded(false);
         }
     }
 
@@ -57,16 +79,28 @@ public class Table implements Comparable<Table> {
     }
 
     public void setDataIncluded(boolean dataIncluded) {
+        setDataIncluded(dataIncluded, new HashSet<>());
+    }
+
+    private void setDataIncluded(boolean dataIncluded, Set<Table> visitedTables) {
         this.dataIncluded = dataIncluded;
 
+        visitedTables.add(this);
+
         for (Table dependentTable : dependentTables) {
-            dependentTable.setDataIncluded(dataIncluded);
+            if (!visitedTables.contains(dependentTable)) {
+                dependentTable.setDataIncluded(dataIncluded, visitedTables);
+            }
+        }
+
+        if (dataIncluded) {
+            setStructureIncluded(true);
         }
     }
 
     @Override
     public int compareTo(Table otherTable) {
-        return name.compareTo(otherTable.name);
+        return getName().compareTo(otherTable.getName());
     }
 
     @Override
@@ -81,26 +115,32 @@ public class Table implements Comparable<Table> {
 
         Table otherTable = (Table) obj;
 
-        return name.equals(otherTable.name);
+        return getName().equals(otherTable.getName());
     }
 
     @Override
     public int hashCode() {
-        return name.hashCode();
+        return getName().hashCode();
     }
 
     @Override
     public String toString() {
-        String toString = name;
-        toString += " (" + ownSize + ", " + getTreeSize() + ") [";
-        if (dependentTables != null) {
-            boolean first = true;
-            for (Table dependentTable : dependentTables) {
+        return toString(new HashSet<>());
+    }
+
+    private String toString(Set<Table> visitedTables) {
+        visitedTables.add(this);
+
+        String toString = getName();
+        toString += " (" + getOwnSize() + ", " + getTreeSize() + ") [";
+        boolean first = true;
+        for (Table dependentTable : dependentTables) {
+            if (!visitedTables.contains(dependentTable)) {
                 if (!first) {
                     toString += ", ";
                 }
                 first = false;
-                toString += dependentTable;
+                toString += dependentTable.toString(visitedTables);
             }
         }
         toString += "]";

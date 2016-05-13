@@ -2,15 +2,14 @@ package dk.frankbille.mysqldumper;
 
 import java.math.BigInteger;
 import java.util.*;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
 
 public class DumpConfiguration {
-    private final Set<Table> tables;
-    private final ConnectionConfiguration connectionConfiguration;
+    private final List<Table> tables = new ArrayList<>();
 
-    DumpConfiguration(List<Map<String, Object>> dependentTables, List<Map<String, Object>> tableSizes, ConnectionConfiguration connectionConfiguration) {
-        this.connectionConfiguration = connectionConfiguration;
-
-        tables = new TreeSet<>();
+    public DumpConfiguration(List<Map<String, Object>> dependentTables, List<Map<String, Object>> tableSizes) {
+        clearTables();
         buildTables(dependentTables, tableSizes);
     }
 
@@ -31,7 +30,7 @@ public class DumpConfiguration {
             }
         }
 
-        tables.addAll(tableLookupMap.values());
+        addAllTables(tableLookupMap.values());
     }
 
     private Table getTable(String tableName, Map<String, Table> tableLookupMap, Map<String, Long> tableSizeMap) {
@@ -53,11 +52,34 @@ public class DumpConfiguration {
         return tableSizeMap;
     }
 
-    public Set<Table> getTables() {
+    public List<Table> getTables() {
         return tables;
     }
 
-    public ConnectionConfiguration getConnectionConfiguration() {
-        return connectionConfiguration;
+    private void addAllTables(Collection<Table> tables) {
+        this.tables.addAll(tables);
     }
+
+    private void clearTables() {
+        tables.clear();
+    }
+
+    public long getTotalSize() {
+        long total = 0;
+        for (Table table : getTables()) {
+            total += table.getOwnSize();
+        }
+        return total;
+    }
+
+    public long getSelectedSize() {
+        long total = 0;
+        for (Table table : getTables()) {
+            if (table.isDataIncluded()) {
+                total += table.getOwnSize();
+            }
+        }
+        return total;
+    }
+
 }

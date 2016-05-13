@@ -15,13 +15,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class DumperTest {
 
+    private Configuration configuration;
     private ConnectionConfiguration connectionConfiguration;
     private JdbcOperations jdbcOperations;
     private Dumper dumper;
 
     @Before
     public void setupTestDatabase() throws IOException {
-        connectionConfiguration = new ConnectionConfiguration();
+        configuration = new Configuration("/test");
+
+        connectionConfiguration = configuration.addNewConnection();
         connectionConfiguration.setHost("localhost");
         connectionConfiguration.setDatabase("mysqldumpertest");
         connectionConfiguration.setUsername("root");

@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class Dumper {
 
-    public DumpConfiguration prepareDump(ConnectionConfiguration connectionConfiguration) {
+    public static DumpConfiguration prepareDump(ConnectionConfiguration connectionConfiguration) {
         JdbcOperations jdbcOperations = new JdbcTemplate(connectionConfiguration.createDataSource());
 
         final List<Map<String, Object>> dependentTables = jdbcOperations.queryForList("SELECT\n" +
@@ -34,10 +34,10 @@ public class Dumper {
                 "ORDER BY\n" +
                 "  table_name");
 
-        return new DumpConfiguration(dependentTables, tableSizes, connectionConfiguration);
+        return new DumpConfiguration(dependentTables, tableSizes);
     }
 
-    public void dump(DumpConfiguration dumpConfiguration, OutputStream outputStream) {
+    public static void dump(DumpConfiguration dumpConfiguration, OutputStream outputStream) {
 
     }
 

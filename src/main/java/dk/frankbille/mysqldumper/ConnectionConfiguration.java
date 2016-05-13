@@ -3,53 +3,111 @@ package dk.frankbille.mysqldumper;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import javax.sql.DataSource;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.prefs.Preferences;
 
 public class ConnectionConfiguration {
 
-    private String host;
-    private int port = -1;
-    private String database;
-    private String username;
-    private String password = "";
+    public interface ConnectionChangedListener {
+        void connectionChanged(ConnectionConfiguration connectionConfiguration);
+    }
+
+    private final Preferences connectionConfiguration;
+    private final List<ConnectionChangedListener> listeners = new ArrayList<>();
+
+    public ConnectionConfiguration(Preferences connectionConfiguration) {
+        this.connectionConfiguration = connectionConfiguration;
+    }
+
+    public String getName() {
+        String name = connectionConfiguration.get("name", null);
+
+        if (name == null || name.length() == 0) {
+            name = "";
+
+            if (getUsername() != null) {
+                name += getUsername() + "@";
+            }
+
+            if (getHost() != null) {
+                name += getHost();
+            }
+
+            if (getPort() != 3306 && getPort() != -1) {
+                name += ":" + getPort();
+            }
+
+            if (getDatabase() != null) {
+                name += "/" + getDatabase();
+            }
+
+            if (name.equals("")) {
+                name = "NEW CONNECTION";
+            }
+        }
+
+        return name;
+    }
+
+    public void setName(String name) {
+        connectionConfiguration.put("name", name);
+        fireConnectionChanged();
+    }
 
     public String getHost() {
-        return host;
+        return connectionConfiguration.get("host", null);
     }
 
     public void setHost(String host) {
-        this.host = host;
+        connectionConfiguration.put("host", host);
+        fireConnectionChanged();
     }
 
     public int getPort() {
-        return port;
+        return connectionConfiguration.getInt("port", 3306);
     }
 
     public void setPort(int port) {
-        this.port = port;
+        connectionConfiguration.putInt("port", port);
+        fireConnectionChanged();
     }
 
     public String getDatabase() {
-        return database;
+        return connectionConfiguration.get("database", null);
     }
 
     public void setDatabase(String database) {
-        this.database = database;
+        connectionConfiguration.put("database", database);
+        fireConnectionChanged();
     }
 
     public String getUsername() {
-        return username;
+        return connectionConfiguration.get("username", null);
     }
 
     public void setUsername(String username) {
-        this.username = username;
+        connectionConfiguration.put("username", username);
+        fireConnectionChanged();
     }
 
     public String getPassword() {
-        return password;
+        return connectionConfiguration.get("password", "");
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        connectionConfiguration.put("password", password);
+        fireConnectionChanged();
+    }
+
+    public void addConnectionChangedListener(ConnectionChangedListener connectionChangedListener) {
+        listeners.add(connectionChangedListener);
+    }
+
+    private void fireConnectionChanged() {
+        for (ConnectionChangedListener listener : listeners) {
+            listener.connectionChanged(this);
+        }
     }
 
     public DataSource createDataSource() {
@@ -58,15 +116,20 @@ public class ConnectionConfiguration {
 
     public DataSource createDataSource(boolean withDatabase) {
         String jdbcUrl = "jdbc:mysql://";
-        jdbcUrl += host;
-        if (port != 3306 && port != -1) {
-            jdbcUrl += ":" + port;
+        jdbcUrl += getHost();
+        if (getPort() != 3306 && getPort() != -1) {
+            jdbcUrl += ":" + getPort();
         }
         if (withDatabase) {
-            jdbcUrl += "/" + database;
+            jdbcUrl += "/" + getDatabase();
         }
         jdbcUrl += "?allowMultiQueries=true";
 
-        return new DriverManagerDataSource(jdbcUrl, username, password);
+        return new DriverManagerDataSource(jdbcUrl, getUsername(), getPassword());
+    }
+
+    @Override
+    public String toString() {
+        return getName();
     }
 }
