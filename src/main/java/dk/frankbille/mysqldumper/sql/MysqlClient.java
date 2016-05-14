@@ -9,6 +9,6 @@ public interface MysqlClient {
 
     boolean isValidMysqlBinDirectory();
 
-    List<Map<String, Object>> query(String sql, ConnectionConfiguration connectionConfiguration);
+    List<Map<String, Object>> query(String sql, ConnectionConfiguration connectionConfiguration, ResultTransformer resultTransformer);
 
 }

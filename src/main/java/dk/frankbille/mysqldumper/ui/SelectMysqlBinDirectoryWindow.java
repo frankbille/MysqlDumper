@@ -3,7 +3,7 @@ package dk.frankbille.mysqldumper.ui;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 import dk.frankbille.mysqldumper.Configuration;
-import dk.frankbille.mysqldumper.sql.MysqlBinaryClient;
+import dk.frankbille.mysqldumper.sql.bin.MysqlBinaryClient;
 
 import javax.swing.*;
 import java.awt.*;

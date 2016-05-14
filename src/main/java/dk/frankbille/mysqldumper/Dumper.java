@@ -1,6 +1,8 @@
 package dk.frankbille.mysqldumper;
 
+import dk.frankbille.mysqldumper.sql.LongValueConverter;
 import dk.frankbille.mysqldumper.sql.MysqlClient;
+import dk.frankbille.mysqldumper.sql.ResultTransformer;
 
 import java.io.OutputStream;
 import java.util.List;
@@ -19,8 +21,10 @@ public class Dumper {
                 "WHERE\n" +
                 "  TABLES.TABLE_SCHEMA = '" + connectionConfiguration.getDatabase() + "'\n" +
                 "ORDER BY\n" +
-                "  TABLES.TABLE_NAME", connectionConfiguration);
+                "  TABLES.TABLE_NAME", connectionConfiguration, null);
 
+        ResultTransformer resultTransformer = new ResultTransformer();
+        resultTransformer.addConverter("table_size", LongValueConverter.INSTANCE);
         final List<Map<String, Object>> tableSizes = mysqlClient.query("SELECT\n" +
                 "  table_name,\n" +
                 "  (data_length + index_length) AS table_size\n" +
@@ -29,12 +33,12 @@ public class Dumper {
                 "WHERE\n" +
                 "  table_schema = '" + connectionConfiguration.getDatabase() + "'\n" +
                 "ORDER BY\n" +
-                "  table_name", connectionConfiguration);
+                "  table_name", connectionConfiguration, resultTransformer);
 
         return new DumpConfiguration(dependentTables, tableSizes);
     }
 
-    public static void dump(DumpConfiguration dumpConfiguration, OutputStream outputStream) {
+    public static void dump(DumpConfiguration dumpConfiguration) {
 
     }
 

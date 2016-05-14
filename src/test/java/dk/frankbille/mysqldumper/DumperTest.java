@@ -1,7 +1,6 @@
 package dk.frankbille.mysqldumper;
 
-import dk.frankbille.mysqldumper.sql.MysqlClient;
-import dk.frankbille.mysqldumper.sql.MysqlJdbcClient;
+import dk.frankbille.mysqldumper.sql.jdbc.MysqlJdbcClient;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.jdbc.core.JdbcOperations;
@@ -70,7 +69,7 @@ public class DumperTest {
                 return table;
             }
         }
-        throw new IllegalStateException("Table not found: "+tableName);
+        throw new IllegalStateException("Table not found: " + tableName);
     }
 
 }

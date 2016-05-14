@@ -4,12 +4,10 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 import dk.frankbille.mysqldumper.Configuration;
 import dk.frankbille.mysqldumper.ConnectionConfiguration;
-import dk.frankbille.mysqldumper.sql.MysqlBinaryClient;
 import dk.frankbille.mysqldumper.sql.MysqlClient;
+import dk.frankbille.mysqldumper.sql.bin.MysqlBinaryClient;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;

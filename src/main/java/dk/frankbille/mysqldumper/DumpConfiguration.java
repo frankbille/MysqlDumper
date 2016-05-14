@@ -1,9 +1,6 @@
 package dk.frankbille.mysqldumper;
 
-import java.math.BigInteger;
 import java.util.*;
-import java.util.prefs.BackingStoreException;
-import java.util.prefs.Preferences;
 
 public class DumpConfiguration {
     private final List<Table> tables = new ArrayList<>();
@@ -36,7 +33,8 @@ public class DumpConfiguration {
     private Table getTable(String tableName, Map<String, Table> tableLookupMap, Map<String, Long> tableSizeMap) {
         Table table = tableLookupMap.get(tableName);
         if (table == null) {
-            table = new Table(tableName, tableSizeMap.get(tableName));
+            final Long ownSize = tableSizeMap.get(tableName);
+            table = new Table(tableName, ownSize);
             tableLookupMap.put(tableName, table);
         }
         return table;
@@ -46,7 +44,7 @@ public class DumpConfiguration {
         Map<String, Long> tableSizeMap = new HashMap<>();
 
         for (Map<String, Object> tableSize : tableSizes) {
-            tableSizeMap.put((String) tableSize.get("table_name"), ((BigInteger) tableSize.get("table_size")).longValue());
+            tableSizeMap.put((String) tableSize.get("table_name"), (Long) tableSize.get("table_size"));
         }
 
         return tableSizeMap;
