@@ -8,12 +8,10 @@ import dk.frankbille.mysqldumper.Dumper;
 import dk.frankbille.mysqldumper.sql.MysqlClient;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 
 public class DumpConfigurationPanel {
 
@@ -53,6 +51,16 @@ public class DumpConfigurationPanel {
                 return columnToolTips[realIndex];
             }
         });
+        sqlTablesTable.setDefaultRenderer(Long.class, new DefaultTableCellRenderer.UIResource() {
+            @Override
+            protected void setValue(Object value) {
+                if (value instanceof Long) {
+                    Long longValue = (Long) value;
+                    value = Utils.humanReadableByteCount(longValue);
+                }
+                super.setValue(value);
+            }
+        });
     }
 
     public void setConnectionConfiguration(MysqlClient mysqlClient, ConnectionConfiguration connectionConfiguration) {
@@ -77,7 +85,7 @@ public class DumpConfigurationPanel {
     }
 
     private void updateSizeLabel(DumpConfiguration dumpConfiguration) {
-        sizeLabel.setText("Selected size: " + dumpConfiguration.getSelectedSize() + ", Total size: " + dumpConfiguration.getTotalSize());
+        sizeLabel.setText("Selected size: " + Utils.humanReadableByteCount(dumpConfiguration.getSelectedSize()) + ", Total size: " + Utils.humanReadableByteCount(dumpConfiguration.getTotalSize()));
     }
 
     {

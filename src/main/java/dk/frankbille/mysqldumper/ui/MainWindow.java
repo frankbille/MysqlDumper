@@ -58,7 +58,7 @@ public class MainWindow extends JDialog {
 
     public static void main(String[] args) {
         MainWindow dialog = new MainWindow();
-        dialog.setSize(800, 600);
+        dialog.setSize(1024, 768);
         dialog.setLocationRelativeTo(null);
         dialog.setVisible(true);
         System.exit(0);
