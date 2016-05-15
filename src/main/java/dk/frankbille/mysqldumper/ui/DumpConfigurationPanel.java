@@ -8,10 +8,15 @@ import dk.frankbille.mysqldumper.Dumper;
 import dk.frankbille.mysqldumper.sql.MysqlClient;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
+import java.io.File;
 
 public class DumpConfigurationPanel {
 
@@ -21,8 +26,11 @@ public class DumpConfigurationPanel {
     private JButton connectButton;
     private JButton dumpButton;
     private JButton refreshButton;
+    private JTextField destinationField;
+    private JButton destinationButton;
     private MysqlClient mysqlClient;
     private ConnectionConfiguration connectionConfiguration;
+    private DumpConfiguration dumpConfiguration;
 
     public DumpConfigurationPanel() {
         connectButton.addActionListener(e -> setDumpConfiguration(Dumper.prepareDump(mysqlClient, connectionConfiguration)));
@@ -61,19 +69,40 @@ public class DumpConfigurationPanel {
                 super.setValue(value);
             }
         });
+
+        destinationField.getDocument().addDocumentListener(new PersistedDocumentListener() {
+            @Override
+            protected void doSaveChanges(String text) {
+                dumpConfiguration.setDestination(text);
+                updateDumpButtonEnabled();
+            }
+        });
+        destinationButton.addActionListener(e -> {
+            JFileChooser fileChooser = new JFileChooser(dumpConfiguration.getDestination());
+            fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            fileChooser.setMultiSelectionEnabled(false);
+            fileChooser.setFileFilter(new FileNameExtensionFilter("SQL files", "sql"));
+            if (fileChooser.showDialog(destinationButton, "Select") == JFileChooser.APPROVE_OPTION) {
+                destinationField.setText(fileChooser.getSelectedFile().getAbsolutePath());
+            }
+        });
     }
 
     public void setConnectionConfiguration(MysqlClient mysqlClient, ConnectionConfiguration connectionConfiguration) {
         this.mysqlClient = mysqlClient;
         this.connectionConfiguration = connectionConfiguration;
+        this.dumpConfiguration = null;
 
         connectButton.setEnabled(true);
-        dumpButton.setEnabled(false);
+        updateDumpButtonEnabled();
         refreshButton.setEnabled(false);
+        destinationField.setEnabled(false);
+        destinationButton.setEnabled(false);
         sizeLabel.setText("");
     }
 
     public void setDumpConfiguration(DumpConfiguration dumpConfiguration) {
+        this.dumpConfiguration = dumpConfiguration;
         final DumpConfigurationTableModel dataModel = new DumpConfigurationTableModel(dumpConfiguration);
         dataModel.addTableModelListener(e -> updateSizeLabel(dumpConfiguration));
         sqlTablesTable.setModel(dataModel);
@@ -81,7 +110,17 @@ public class DumpConfigurationPanel {
         updateSizeLabel(dumpConfiguration);
         connectButton.setEnabled(false);
         refreshButton.setEnabled(true);
-        dumpButton.setEnabled(true);
+        updateDumpButtonEnabled();
+        destinationField.setEnabled(true);
+        destinationButton.setEnabled(true);
+    }
+
+    private void updateDumpButtonEnabled() {
+        boolean enabled = false;
+        if (dumpConfiguration != null) {
+            enabled = dumpConfiguration.isDestinationValid();
+        }
+        dumpButton.setEnabled(enabled);
     }
 
     private void updateSizeLabel(DumpConfiguration dumpConfiguration) {
@@ -110,21 +149,34 @@ public class DumpConfigurationPanel {
         sqlTablesTable = new JTable();
         scrollPane1.setViewportView(sqlTablesTable);
         final JPanel panel2 = new JPanel();
-        panel2.setLayout(new FormLayout("fill:max(d;4px):grow,left:4dlu:noGrow,fill:d:noGrow,left:4dlu:noGrow,fill:max(d;4px):noGrow,left:4dlu:noGrow,fill:max(d;4px):noGrow", "center:d:grow,top:3dlu:noGrow,center:max(d;4px):noGrow"));
+        panel2.setLayout(new FormLayout("fill:max(d;4px):grow,left:4dlu:noGrow,fill:d:noGrow,left:4dlu:noGrow,fill:max(d;4px):noGrow,left:4dlu:noGrow,fill:max(d;4px):noGrow", "center:d:grow,top:3dlu:noGrow,center:max(d;4px):noGrow,top:3dlu:noGrow,center:d:grow,top:3dlu:noGrow,center:max(d;4px):noGrow"));
         panel1.add(panel2, BorderLayout.SOUTH);
         connectButton = new JButton();
         connectButton.setText("Connect");
         CellConstraints cc = new CellConstraints();
-        panel2.add(connectButton, cc.xy(3, 3));
+        panel2.add(connectButton, cc.xy(3, 7));
         sizeLabel = new JLabel();
         sizeLabel.setText("");
-        panel2.add(sizeLabel, cc.xy(1, 3, CellConstraints.DEFAULT, CellConstraints.CENTER));
+        panel2.add(sizeLabel, cc.xy(1, 7, CellConstraints.DEFAULT, CellConstraints.CENTER));
         dumpButton = new JButton();
         dumpButton.setText("Dump");
-        panel2.add(dumpButton, cc.xy(7, 3));
+        panel2.add(dumpButton, cc.xy(7, 7));
         refreshButton = new JButton();
         refreshButton.setText("Refresh");
-        panel2.add(refreshButton, cc.xy(5, 3));
+        panel2.add(refreshButton, cc.xy(5, 7));
+        final JSeparator separator1 = new JSeparator();
+        panel2.add(separator1, cc.xyw(1, 5, 7, CellConstraints.FILL, CellConstraints.FILL));
+        final JPanel panel3 = new JPanel();
+        panel3.setLayout(new FormLayout("fill:d:noGrow,left:4dlu:noGrow,fill:d:grow,left:4dlu:noGrow,fill:max(d;4px):noGrow", "center:d:grow,top:3dlu:noGrow,center:max(d;4px):noGrow"));
+        panel2.add(panel3, cc.xyw(1, 3, 7));
+        final JLabel label1 = new JLabel();
+        label1.setText("Destination");
+        panel3.add(label1, cc.xy(1, 3));
+        destinationField = new JTextField();
+        panel3.add(destinationField, cc.xy(3, 3, CellConstraints.FILL, CellConstraints.DEFAULT));
+        destinationButton = new JButton();
+        destinationButton.setText("...");
+        panel3.add(destinationButton, cc.xy(5, 3));
     }
 
     /**

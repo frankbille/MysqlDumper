@@ -1,13 +1,36 @@
 package dk.frankbille.mysqldumper;
 
+import java.io.File;
 import java.util.*;
 
 public class DumpConfiguration {
     private final List<Table> tables = new ArrayList<>();
+    private String destination;
 
     public DumpConfiguration(List<Map<String, Object>> dependentTables, List<Map<String, Object>> tableSizes) {
         clearTables();
         buildTables(dependentTables, tableSizes);
+    }
+
+    public String getDestination() {
+        return destination;
+    }
+
+    public void setDestination(String destination) {
+        this.destination = destination;
+    }
+
+    public boolean isDestinationValid() {
+        boolean valid = false;
+        if (destination != null) {
+            final File destinationFile = new File(destination);
+            if (destinationFile.exists() && destinationFile.isFile()) {
+                valid = true;
+            } else if (!destinationFile.exists() && destinationFile.getParentFile().isDirectory()) {
+                valid = true;
+            }
+        }
+        return valid;
     }
 
     private void buildTables(List<Map<String, Object>> dependentTables, List<Map<String, Object>> tableSizes) {
@@ -79,5 +102,4 @@ public class DumpConfiguration {
         }
         return total;
     }
-
 }
