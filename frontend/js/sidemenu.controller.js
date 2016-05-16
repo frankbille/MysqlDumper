@@ -1,5 +1,4 @@
-angular.module('mysqldumper').controller('SideMenuController', function ($scope, Settings, Dialogs) {
-
+angular.module('mysqldumper').controller('SideMenuController', function ($scope, $rootScope, $mdSidenav, Settings, Dialogs) {
     Settings.get('connections').then(function(connections) {
         $scope.connections = connections;
     });
@@ -32,6 +31,13 @@ angular.module('mysqldumper').controller('SideMenuController', function ($scope,
             $scope.connections.splice(index, 1);
             Settings.set('connections', $scope.connections);
         });
+    };
+
+    $scope.test = function(connection) {
+        $rootScope.$broadcast('connection-selection-changed', connection);
+
+        $mdSidenav('left').close();
+
     };
 
 });

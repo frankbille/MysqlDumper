@@ -29,6 +29,13 @@
             </md-button>
         </div>
     </md-toolbar>
+
+    <div layout="row" layout-align="center center" ng-show="loadingConnection">
+        <md-progress-circular md-mode="indeterminate" md-diameter="96"></md-progress-circular>
+    </div>
+    <div layout="row" ng-show="dumpConfiguration">
+
+    </div>
 </md-content>
 <md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="left">
     <div ng-controller="SideMenuController">
@@ -46,7 +53,7 @@
         </md-toolbar>
         <md-content layout-padding>
             <md-list>
-                <md-list-item ng-repeat="connection in connections">
+                <md-list-item ng-repeat="connection in connections" ng-click="test(connection)">
                     <p> {{ connection.name }} </p>
                     <md-menu>
                         <md-button aria-label="Open phone interactions menu" class="md-icon-button"

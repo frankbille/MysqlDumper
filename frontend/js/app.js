@@ -1,5 +1,6 @@
 const remote = require('electron').remote;
 var settings = remote.getGlobal('settings');
+var mysqlClient = remote.getGlobal('mysqlclient');
 
 var app = angular.module('mysqldumper', ['ngMaterial', 'ngMessages']);
 
@@ -90,6 +91,14 @@ app.factory('Dialogs', function ($mdDialog) {
                .cancel('Cancel');
 
             return $mdDialog.show(confirm);
+        }
+    }
+});
+
+app.factory('MysqlClient', function() {
+    return {
+        query: function(sql, connection) {
+            return mysqlClient.query(sql, connection);
         }
     }
 });
