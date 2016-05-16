@@ -6,6 +6,7 @@ cache:
   directories:
   - $HOME/.electron
   - node_modules
+  - frontend/bower_components
 deploy:
   provider: releases
   prerelease: true
