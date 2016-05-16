@@ -4,4 +4,5 @@ node_js:
 script: npm run bundle
 cache:
   directories:
+  - $HOME/.electron
   - node_modules
