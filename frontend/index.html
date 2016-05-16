@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html ng-app="mysqldumper">
+<head>
+    <title>MysqlDumper</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no"/>
+    <style type="text/css">
+        [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+            display: none !important;
+        }
+    </style>
+    <link rel="stylesheet" href="bower_components/angular-material/angular-material.css">
+    <link rel="stylesheet" href="fonts/material-icons.css">
+    <link rel="stylesheet" href="css/app.css">
+</head>
+<body ng-cloak ng-controller="AppController">
+
+<md-content>
+    <md-toolbar ng-controller="MenuController">
+        <div class="md-toolbar-tools">
+            <md-button class="md-icon-button" aria-label="Menu" ng-click="toggleMenu()">
+                <md-icon>menu</md-icon>
+            </md-button>
+            <h1>
+                <span>MysqlDumper</span>
+            </h1>
+            <span flex></span>
+            <md-button class="md-icon-button" aria-label="Settings" ng-click="showSettings($event)">
+                <md-icon>settings</md-icon>
+            </md-button>
+        </div>
+    </md-toolbar>
+</md-content>
+<md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="left">
+    <div ng-controller="SideMenuController">
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>Connections</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="addConnection($event)">
+                    <md-tooltip md-direction="bottom">
+                        Add new connection
+                    </md-tooltip>
+                    <md-icon>add</md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+        <md-content layout-padding>
+            <md-list>
+                <md-list-item ng-repeat="connection in connections">
+                    <p> {{ connection.name }} </p>
+                    <md-menu>
+                        <md-button aria-label="Open phone interactions menu" class="md-icon-button"
+                                   ng-click="$mdOpenMenu($event)">
+                            <md-icon>more_vert</md-icon>
+                        </md-button>
+                        <md-menu-content width="4">
+                            <md-menu-item>
+                                <md-button ng-click="editConnection($event, connection)">
+                                    <md-icon>edit</md-icon>
+                                    Edit
+                                </md-button>
+                            </md-menu-item>
+                            <md-menu-item>
+                                <md-button ng-click="removeConnection($event, connection)">
+                                    <md-icon>delete</md-icon>
+                                    Remove
+                                </md-button>
+                            </md-menu-item>
+                        </md-menu-content>
+                    </md-menu>
+                </md-list-item>
+            </md-list>
+        </md-content>
+    </div>
+</md-sidenav>
+
+<script src="bower_components/angular/angular.js"></script>
+<script src="bower_components/angular-aria/angular-aria.js"></script>
+<script src="bower_components/angular-animate/angular-animate.js"></script>
+<script src="bower_components/angular-messages/angular-messages.js"></script>
+<script src="bower_components/angular-material/angular-material.js"></script>
+<script src="js/app.js"></script>
+<script src="js/app.controller.js"></script>
+<script src="js/menu.controller.js"></script>
+<script src="js/sidemenu.controller.js"></script>
+<script src="js/mysqlbindialog.controller.js"></script>
+<script src="js/connection.controller.js"></script>
+</body>
+</html>

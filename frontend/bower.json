@@ -1,0 +1,8 @@
+{
+  "name": "mysqldumper",
+  "private": true,
+  "dependencies": {
+    "angular-material": "1.0.8",
+    "angular": "1.5.5"
+  }
+}

@@ -1,0 +1,64 @@
+<md-dialog ng-cloak flex="80">
+    <form name="connectionForm" ng-submit="save()">
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>Edit Connection</h2>
+                <span flex></span>
+            </div>
+        </md-toolbar>
+        <md-dialog-content>
+            <div class="md-dialog-content">
+                <md-input-container class="md-block">
+                    <label>Name</label>
+                    <input ng-model="connection.name" name="name" md-auto-focus required>
+                    <div ng-messages="connectionForm.name.$error">
+                        <div ng-message="required">This is required.</div>
+                    </div>
+                </md-input-container>
+
+                <md-input-container class="md-block">
+                    <label>Host</label>
+                    <input ng-model="connection.host" name="host" required>
+                    <div ng-messages="connectionForm.host.$error">
+                        <div ng-message="required">This is required.</div>
+                    </div>
+                </md-input-container>
+
+                <md-input-container class="md-block">
+                    <label>Port</label>
+                    <input ng-model="connection.port" name="port" type="number" required>
+                    <div ng-messages="connectionForm.port.$error">
+                        <div ng-message="required">This is required.</div>
+                    </div>
+                </md-input-container>
+
+                <md-input-container class="md-block">
+                    <label>Database</label>
+                    <input ng-model="connection.database" name="database" required>
+                    <div ng-messages="connectionForm.database.$error">
+                        <div ng-message="required">This is required.</div>
+                    </div>
+                </md-input-container>
+
+                <md-input-container class="md-block">
+                    <label>Username</label>
+                    <input ng-model="connection.username" name="username" required>
+                    <div ng-messages="connectionForm.username.$error">
+                        <div ng-message="required">This is required.</div>
+                    </div>
+                </md-input-container>
+
+                <md-input-container class="md-block">
+                    <label>Password</label>
+                    <input ng-model="connection.password" name="password" type="password">
+                </md-input-container>
+            </div>
+        </md-dialog-content>
+        <md-dialog-actions layout="row">
+            <span flex></span>
+            <md-button type="submit">
+                Save
+            </md-button>
+        </md-dialog-actions>
+    </form>
+</md-dialog>

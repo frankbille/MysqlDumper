@@ -1,12 +1,18 @@
 {
   "name": "MysqlDumper",
   "version": "0.1.0",
-  "main": "main.js",
+  "main": "main/main.js",
+  "dependencies": {
+    "electron-json-storage": "2.0.0"
+  },
   "devDependencies": {
+    "bower": "1.7.9",
     "electron-packager": "^7.0.1",
     "electron-prebuilt": "1.0.2"
   },
   "scripts": {
+    "postinstall": "cd frontend && bower install",
+    "start": "electron .",
     "bundle": "npm run bundle-win && npm run bundle-linux && npm run bundle-mac",
     "bundle-win": "electron-packager . MysqlDumper  --platform=win32 --arch=all --overwrite --out=out --asar",
     "bundle-linux": "electron-packager . MysqlDumper  --platform=linux --arch=all --overwrite --out=out --asar --app-version=$npm_package_version",
