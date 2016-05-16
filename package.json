@@ -8,7 +8,8 @@
   "devDependencies": {
     "bower": "1.7.9",
     "electron-packager": "^7.0.1",
-    "electron-prebuilt": "1.0.2"
+    "electron-prebuilt": "1.0.2",
+    "bestzip": "1.1.3"
   },
   "scripts": {
     "postinstall": "cd frontend && bower install",
@@ -16,6 +17,10 @@
     "bundle": "npm run bundle-win && npm run bundle-linux && npm run bundle-mac",
     "bundle-win": "electron-packager . MysqlDumper  --platform=win32 --arch=all --overwrite --out=out --asar",
     "bundle-linux": "electron-packager . MysqlDumper  --platform=linux --arch=all --overwrite --out=out --asar --app-version=$npm_package_version",
-    "bundle-mac": "electron-packager . MysqlDumper  --platform=darwin --arch=all --overwrite --out=out --asar --app-bundle-id=dk.frankbille.mysqldumper --app-category-type=public.app-category.developer-tools --app-version=$npm_package_version"
+    "bundle-mac": "electron-packager . MysqlDumper  --platform=darwin --arch=all --overwrite --out=out --asar --app-bundle-id=dk.frankbille.mysqldumper --app-category-type=public.app-category.developer-tools --app-version=$npm_package_version",
+    "dist": "npm run dist-win && npm run dist-linux && npm run dist-mac",
+    "dist-win": "npm run bundle-win && cd out && bestzip MysqlDumper-win32-ia32.zip MysqlDumper-win32-ia32/* && bestzip MysqlDumper-win32-x64.zip MysqlDumper-win32-x64/*",
+    "dist-linux": "npm run bundle-linux && cd out && bestzip MysqlDumper-linux-ia32.zip MysqlDumper-linux-ia32/* && bestzip MysqlDumper-linux-x64.zip MysqlDumper-linux-x64/*",
+    "dist-mac": "npm run bundle-mac && cd out && bestzip MysqlDumper-darwin-x64.zip MysqlDumper-darwin-x64/*"
   }
 }

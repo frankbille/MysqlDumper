@@ -1,8 +1,17 @@
 language: node_js
 node_js:
-  - "5"
+- '5'
 script: npm run bundle
 cache:
   directories:
   - $HOME/.electron
   - node_modules
+deploy:
+  provider: releases
+  api_key:
+    secure: eVgqhfeKJ/jUaYWItxT8tWM3hMDoY8jALDXkdByOhqO/3I5SOucoITxUG7L2IbECLLe+OLEBv4QM4QYkl/EpGpLBkO0Cld0tFXWZP93LjOwZ95/HmsqTPmvQCwAc58ATfCbkkNUsIEiBkhTQXw407KFnyG8HAjDGSVhjJqCbTUWfwrIy9Tav9FHO73Cmok+hsUPhyroulb6M6C5zfrseJjHEzbWtlWAkUD0Wgu3IdKNmoiDzcLkCcd//tgYt9swB6RgnKLg9VxrbrycXn+JhE387RhmVv8YiburmoCFdTXrUwKZ5HKSVXEQSMWWzyFYVeNQ2yYmlLXG7JVNFdIQV6qAOkKhSU8cDvwft+fdbXsfsRoUrhL4vQ/9cCfM6AO1NOBMLtH+g+YpRV0Ri2S6aSwaNPmC9zXRBqFDP2qgjDQ7alxFj4uNcqAwEOPJfiGukSZP3yvgYHaP9+Oikee2XIMSnr1ycVZ2FyCXDPmYG2DGJNYlN5gyyUnzaTWZFTRZYbq/RKRrJDI4xk6V4qvNOjUo76qvBugDP3q1Ux6R+/gwVCdzJa251RNSZysEz3K/IdO4hhHrjFUNlCDPCMYBOfQLPLY4fL5+aTTbrApbrdS0k13ip1H5+qUYy2nWuUzdblDN6NAgifQrT+yj6aoaRRY2l8tVoDHKHkRXoUM2dEac=
+  file_glob: true
+  file: out/*.zip
+  skip_cleanup: true
+  on:
+    tags: true
