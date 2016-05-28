@@ -3,6 +3,7 @@
   "private": true,
   "dependencies": {
     "angular-material": "1.0.8",
-    "angular": "1.5.5"
+    "angular": "1.5.5",
+    "angular-material-data-table": "0.10.9"
   }
 }

@@ -9,13 +9,14 @@
         }
     </style>
     <link rel="stylesheet" href="bower_components/angular-material/angular-material.css">
+    <link rel="stylesheet" href="bower_components/angular-material-data-table/dist/md-data-table.min.css">
     <link rel="stylesheet" href="fonts/material-icons.css">
     <link rel="stylesheet" href="css/app.css">
 </head>
 <body ng-cloak ng-controller="AppController">
 
-<md-content>
-    <md-toolbar ng-controller="MenuController">
+<div layout="column" layout-fill>
+    <md-toolbar ng-controller="MenuController" class="md-medium-tall">
         <div class="md-toolbar-tools">
             <md-button class="md-icon-button" aria-label="Menu" ng-click="toggleMenu()">
                 <md-icon>menu</md-icon>
@@ -25,18 +26,67 @@
             </h1>
             <span flex></span>
             <md-button class="md-icon-button" aria-label="Settings" ng-click="showSettings($event)">
+                <md-tooltip>
+                    Settings
+                </md-tooltip>
                 <md-icon>settings</md-icon>
             </md-button>
         </div>
     </md-toolbar>
 
-    <div layout="row" layout-align="center center" ng-show="loadingConnection">
-        <md-progress-circular md-mode="indeterminate" md-diameter="96"></md-progress-circular>
-    </div>
-    <div layout="row" ng-show="dumpConfiguration">
+    <md-content flex>
+        <div ng-show="dumpConfiguration">
+            <md-table-container>
+                <table md-table md-progress="dumpConfiguration">
+                    <thead md-head md-order="sortOrder">
+                    <tr md-row>
+                        <th md-column md-order-by="name">Table name</th>
+                        <th md-column width="1%">
+                            <md-checkbox ng-model="dumpConfiguration.includeAllStructure" aria-label="Include all structure"></md-checkbox>
+                            Structure
+                        </th>
+                        <th md-column width="1%">
+                            <md-checkbox ng-model="dumpConfiguration.includeAllData" aria-label="Include all data"></md-checkbox>
+                            Data
+                        </th>
+                        <th md-column width="1%" md-order-by="ownSize" md-numeric>Own size</th>
+                        <th md-column width="1%" md-order-by="getTreeSize()" md-numeric>Tree size</th>
+                    </tr>
+                    </thead>
+                    <tbody md-body>
+                    <tr md-row ng-repeat="table in dumpConfiguration.tables | orderBy: sortOrder">
+                        <td md-cell>{{table.name}}</td>
+                        <td md-cell><md-checkbox ng-model="table.includeStructure" aria-label="Include structure for {{table.name}}"></md-checkbox></td>
+                        <td md-cell><md-checkbox ng-model="table.includeData" aria-label="Include data for {{table.name}}"></md-checkbox></td>
+                        <td md-cell>{{::table.ownSize | bytes}}</td>
+                        <td md-cell>{{table.getTreeSize() | bytes}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </md-table-container>
+        </div>
+    </md-content>
 
-    </div>
-</md-content>
+    <md-toolbar ng-show="dumpConfiguration">
+        <div class="md-toolbar-tools">
+            <span>
+                Total size: {{dumpConfiguration.totalSize | bytes}}
+                -
+                Selected size: {{dumpConfiguration.selectedSize | bytes}}
+            </span>
+            <span flex></span>
+            <md-button ng-click="showDetails($event)">
+                Details
+            </md-button>
+            <md-button class="md-raised md-accent">
+                <md-tooltip md-direction="left">
+                    Not implemented yet
+                </md-tooltip>
+                Export
+            </md-button>
+        </div>
+    </md-toolbar>
+</div>
 <md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="left">
     <div ng-controller="SideMenuController">
         <md-toolbar>
@@ -53,7 +103,7 @@
         </md-toolbar>
         <md-content layout-padding>
             <md-list>
-                <md-list-item ng-repeat="connection in connections" ng-click="test(connection)">
+                <md-list-item ng-repeat="connection in connections" ng-click="selectConnection(connection)">
                     <p> {{ connection.name }} </p>
                     <md-menu>
                         <md-button aria-label="Open phone interactions menu" class="md-icon-button"
@@ -86,11 +136,15 @@
 <script src="bower_components/angular-animate/angular-animate.js"></script>
 <script src="bower_components/angular-messages/angular-messages.js"></script>
 <script src="bower_components/angular-material/angular-material.js"></script>
+<script src="bower_components/angular-material-data-table/dist/md-data-table.min.js"></script>
 <script src="js/app.js"></script>
+<script src="js/table.class.js"></script>
+<script src="js/dumpConfiguration.class.js"></script>
 <script src="js/app.controller.js"></script>
 <script src="js/menu.controller.js"></script>
 <script src="js/sidemenu.controller.js"></script>
 <script src="js/mysqlbindialog.controller.js"></script>
 <script src="js/connection.controller.js"></script>
+<script src="js/dumpdetails.controller.js"></script>
 </body>
 </html>
