@@ -11,6 +11,16 @@ Download
 Alpha builds can be [downloaded here][download].
 
 
+Development
+-----------
+
+Feel free to create pull request with fixes/improvements.
+
+### Releasing
+
+I currently use [Release It][releaseit].
+
+
 License
 -------
 
@@ -19,3 +29,4 @@ Released under GPLv3
 
 
 [download]: https://github.com/frankbille/MysqlDumper/releases
+[releaseit]: http://webpro.github.io/release-it/
