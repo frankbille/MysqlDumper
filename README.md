@@ -5,6 +5,21 @@ GUI tool for dumping a Mysql database with possibility to exclude data from
 specific tables with their dependencies.
 
 
+Features
+--------
+
+Not checked is planned!
+
+- [x] Select which table structures and/or data to include
+- [x] Add table dependencies so, deselecting a table also deselects tables that depends
+      on it.
+- [x] Show the commands to use for dumping based on table configuration
+- [x] Connection management
+- [x] Configurable mysql client version
+- [ ] Actually dump the database
+- [ ] Select if dump to file or another database
+
+
 Download
 --------
 
