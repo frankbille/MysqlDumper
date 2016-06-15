@@ -5,7 +5,7 @@ GUI tool for dumping a Mysql database with possibility to exclude data from
 specific tables with their dependencies.
 
 
-[screenshots/screenshot.png]
+![Screenshot](screenshots/screenshot.png "Screenshot")
 
 
 Features
