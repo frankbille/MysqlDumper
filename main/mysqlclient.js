@@ -14,8 +14,7 @@ module.exports = {
                 args.push('-u');
                 args.push(connection.username);
                 if (connection.password) {
-                    args.push('-p');
-                    args.push(connection.password);
+                    args.push('--password='+connection.password);
                 }
                 // Output as XML
                 args.push('-X');
