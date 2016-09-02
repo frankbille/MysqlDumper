@@ -1,9 +1,6 @@
 language: node_js
 node_js:
-  - '5'
-before_install:
-  - sudo apt-get -qq update
-  - sudo apt-get install -y wine
+  - '5.11'
 script: npm run dist
 cache:
   directories:
